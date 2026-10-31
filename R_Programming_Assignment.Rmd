@@ -4,13 +4,85 @@ author: "Eric NZABIHIMANA"
 date: "2026-10-31"
 output: github_document
 ---
-### Hw1: Import data from statistical package and from Database management system
+# Hw1: Import data from statistical package and from Database management system
 
-#Installation of packages open the files from statistical packages
+## Installation of packages open the files from statistical packages
+
 install.packages(c("haven","readxl","readr"))
 
-#Load the packages
+## Load the packages
 
 library(haven)
 library(readxl)
 library(readr)
+
+## Load the data # Excel format
+
+excel_data <-read_excel("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.xlsx")
+
+## summarizing the data 
+head(excel_data)
+tail(excel_data)
+summary(excel_data$science)
+
+## Load the data # CSV format
+
+csv_data <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.csv",show_col_types=FALSE)
+
+## Summarize the data
+head(csv_data)
+tail(csv_data)
+summary(csv_data$science)
+
+## Load the data # Stata format
+
+dta_data <- read_dta("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.dta")
+
+## Summarize the data
+head(dta_data)
+tail(dta_data)
+summary(dta_data$science)
+
+# Hw2: Class activities practice
+
+## Vector: The foundational R data strucure
+
+# Example 1
+
+age<-c(25,20,16)
+summary(age)
+
+# Example 2
+age <-c(35,24,15,27)
+mean(age)
+
+## Character
+
+x <- c("a","b","c")
+class<-c("M","F","F","M")
+
+## Logical
+x <-c(TRUE,FALSE)
+x <-c(T,F)
+
+## Complex
+x<-c (1+0i,2+4i)
+
+## Integer
+x <- 9:29
+
+## Matrix and operation with in matrices
+(x<-matrix(1:6,nrow=2,ncol=3))
+
+(y<-matrix(1:6,nrow=3,ncol=2))
+x%*%y
+
+### Exploratory data Analysis
+
+dta_data
+summary(dta_data)
+str(dta_data)
+names(dta_data)
+categ_anal=table(Gender=dta_data$gender,Grade=dta_data$science)
+round(prop.table(categ_anal,1)*100,1)
+
