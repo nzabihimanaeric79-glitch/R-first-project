@@ -1,2 +1,2 @@
-R-First-Project
-This is my learning journey of R from scratch.
+Script_one.R holds
+my R-code through this learning journey.
