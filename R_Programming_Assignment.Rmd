@@ -4,7 +4,7 @@ author: "Eric NZABIHIMANA"
 date: "2026-10-31"
 output: github_document
 ---
-#-------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
 # Hw1: Import data from statistical package and from Database management system
 
 ## Installation of packages open the files from statistical packages
