@@ -9,42 +9,62 @@ output: html_document
 
 ## Installation and calling the packages for loading data
 
+```{r inst, eval=FALSE}
 install.packages(c("readxl","readr"))
+```
+
+```{r packages}
 library(readxl)
 library(readr)
+```
 
 ## Loading CO2 Emmission & Population data
 
-co2_emmission<- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/CO2_emission.csv")
+```{r load-co2}
+co2_emmission <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/CO2_emission.csv")
+```
 
-world_pop <-read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/world_population.csv")
+```{r load-pop}
+world_pop <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/world_population.csv")
+```
 
 ## Summary of the Population Data-set
 
 ### Top five rows of population Data-set
 
+```{r head}
 head(world_pop)
+```
 
 ### Last ten rows of population Data-set
 
+```{r tail}
 tail(world_pop,10)
-
+```
+head(world_pop)
 ### Data types of population Data-set
 
+```{r str}
 str(world_pop)
+```
 
 ### Shape of population Data-set
 
+```{r dim}
 dim(world_pop)
+```
 
 ## Checking missing value in population Data-set
 
 ### Checking total missing in the whole Data-set
-sum(is.na(world_pop))
 
-## Checking Outlines
+```{r sum}
+sum(is.na(world_pop))
+```
+
+## Checking Outliers
+
 ```{r boxplot}
 boxplot(world_pop[6:17],main="Box Plot for World Population Data",las=2)
 ```
-View (world_pop)
 
