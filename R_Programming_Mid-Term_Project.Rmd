@@ -130,4 +130,5 @@ ggplot(trend, aes(x = Year, y = Population, color = `Country/Territory`)) +
        color = "Country")
 trend
 ```
+gggplt
 
