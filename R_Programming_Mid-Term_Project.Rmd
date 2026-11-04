@@ -2,12 +2,14 @@
 title: "R-Mid-Term Project"
 author: "Eric NZABIHIMANA"
 date: "2026-11-03"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-# MID-TERM PROJECT OF R-PROGRAMMING
+## MID-TERM PROJECT OF R-PROGRAMMING
 
-## Installation and calling the packages for loading data
+### Installation and calling the packages for loading data
 
 ```{r inst, eval=FALSE}
 install.packages(c("readxl","readr"))
@@ -18,7 +20,7 @@ library(readxl)
 library(readr)
 ```
 
-## Loading CO2 Emmission & Population data
+### Loading CO2 Emmission & Population data
 
 ```{r load-co2}
 co2_emmission <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/CO2_emission.csv")
@@ -28,12 +30,12 @@ co2_emmission <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Docume
 world_pop <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/world_population.csv")
 ```
 
-## Summary of the Population Data-set
+### Summary of the Population Data-set
 
 ### Top five rows of population Data-set
 
 ```{r head}
-head(world_pop)
+head(world_pop,5)
 ```
 
 ### Last ten rows of population Data-set
@@ -41,9 +43,8 @@ head(world_pop)
 ```{r tail}
 tail(world_pop,10)
 ```
-head(world_pop)
-### Data types of population Data-set
 
+### Data types of population Data-set
 ```{r str}
 str(world_pop)
 ```
@@ -54,18 +55,41 @@ str(world_pop)
 dim(world_pop)
 ```
 
-## Checking missing value in population Data-set
+### Checking & dropping duplicates rows
+```{r}
+sum(duplicated(world_pop))
+library(dplyr)
+world_pop_clean <- world_pop %>% distinct()
+View(world_pop_clean)
+```
 
 ### Checking total missing in the whole Data-set
 
 ```{r sum}
-sum(is.na(world_pop))
+sum(is.na(world_pop[,1:17]))
 ```
 
-## Checking Outliers
+### Checking Outliers
 
 ```{r boxplot}
 boxplot(world_pop[6:17],main="Box Plot for World Population Data",las=2)
 ```
-# The follow id for tomorrow
+
+## New variable creation based on existing variable
+
+### To create new variable from existing when you are given initial population population (base of 2020 population size) growth rate(differ to each & every country),natural logarithm (2.71828) and time period(8 years.
+
+```{r Pop in 2030}
+time<- 2030-2022
+world_pop$Pop_2030 <- world_pop$`2022 Population` *exp((world_pop$`Growth Rate` - 1) * 8)
+```
+
+## Extracting top ten countries with largest number of population
+
+```{r top ten countries}
+top_ten<-world_pop[order(world_pop$`2020 Population`,decreasing = TRUE),][1:10,]
+top_ten
+```
+
+
 
