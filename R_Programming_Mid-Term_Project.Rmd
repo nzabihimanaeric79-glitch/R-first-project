@@ -77,7 +77,7 @@ boxplot(world_pop[6:17],main="Box Plot for World Population Data",las=2)
 
 ## New variable creation based on existing variable
 
-### To create new variable from existing when you are given initial population population (base of 2020 population size) growth rate(differ to each & every country),natural logarithm (2.71828) and time period(8 years.
+### To create new variable from existing when you are given initial population population (base of 2022 population size) growth rate(differ to each & every country),natural logarithm (2.71828) and time period(8 years.
 
 ```{r Pop in 2030}
 time<- 2030-2022
@@ -89,7 +89,45 @@ world_pop$Pop_2030 <- world_pop$`2022 Population` *exp((world_pop$`Growth Rate` 
 ```{r top ten countries}
 top_ten<-world_pop[order(world_pop$`2020 Population`,decreasing = TRUE),][1:10,]
 top_ten
-```
-gggpl
 
+```
+### By using ggplo2# graph showing the visualization of countries vs population 
+
+
+```{r graph of top ten}
+library(ggplot2)
+library(tidyr)
+ggplot(top10, aes(x = reorder(`Country/Territory`, `2022 Population`),
+                  y = `2022 Population`)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma) +
+  labs(title = "Top 10 Countries by Population (2022)",
+       x = "Country",
+       y = "Population")
+```
+## Trend in population since 1990-2022 
+### The graph ggplot2 used to show the the trend of population since 1990 to 2022
+
+```{r trend in population}
+trend <- pivot_longer(top10,
+                      cols = c(`1990 Population`, `2000 Population`,
+                               `2010 Population`, `2015 Population`,
+                               `2020 Population`, `2022 Population`),
+                      names_to = "Year",
+                      values_to = "Population")
+
+trend$Year <- as.numeric(substr(trend$Year, 1, 4))
+
+ggplot(trend, aes(x = Year, y = Population, color = `Country/Territory`)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(breaks = c(1990, 2000, 2010, 2015, 2020, 2022)) +
+  labs(title = "Population Trend, 1990 to 2022 (Top 10 Countries)",
+       x = "Year",
+       y = "Population",
+       color = "Country")
+trend
+```
 
