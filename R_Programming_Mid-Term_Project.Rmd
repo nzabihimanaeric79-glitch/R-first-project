@@ -90,6 +90,6 @@ world_pop$Pop_2030 <- world_pop$`2022 Population` *exp((world_pop$`Growth Rate` 
 top_ten<-world_pop[order(world_pop$`2020 Population`,decreasing = TRUE),][1:10,]
 top_ten
 ```
-
+gggplot2
 
 
