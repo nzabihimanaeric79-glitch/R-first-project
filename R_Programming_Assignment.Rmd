@@ -2,7 +2,7 @@
 title: "Class Assignments of R"
 author: "Eric NZABIHIMANA"
 date: "2026-10-31"
-output: github_document
+output: html_document
 ---
 #-----------------------------------------------------------------------------------
 # Hw1: Import data from statistical package and from Database management system
@@ -11,45 +11,54 @@ output: github_document
 
 install.packages(c("haven","readxl","readr"))
 
+```{r Load}
 ## Load the packages
 
 library(haven)
 library(readxl)
 library(readr)
+```
 
+```{r Load data}
 ## Load the data # Excel format
 
 excel_data <-read_excel("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.xlsx")
-
+```
+```{r Summ}
 ## summarizing the data 
 head(excel_data)
 tail(excel_data)
 summary(excel_data$science)
-
+```
+```{r CSV format}
 ## Load the data # CSV format
 
 csv_data <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.csv",show_col_types=FALSE)
-
+```
+```{r Summaries}
 ## Summarize the data
 head(csv_data)
 tail(csv_data)
 summary(csv_data$science)
-
+```
+```{r Stata}
 ## Load the data # Stata format
 
 dta_data <- read_dta("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/student_marks.dta")
-
+```
+```{r Summary}
 ## Summarize the data
 head(dta_data)
 tail(dta_data)
 summary(dta_data$science)
-
+```
 #-------------------------------------------------------------------------------
 
 # Hw2: Class activities practice
 
 ## Vector: The foundational R data strucure
-
+```{r Ex & Cha}
+## Examples 
 # Example 1
 
 age<-c(25,20,16)
@@ -73,19 +82,298 @@ x<-c (1+0i,2+4i)
 
 ## Integer
 x <- 9:29
-
+x
 ## Matrix and operation with in matrices
 (x<-matrix(1:6,nrow=2,ncol=3))
 
 (y<-matrix(1:6,nrow=3,ncol=2))
 x%*%y
-
+```
+```{r Data explo}
 ### Exploratory data Analysis
 
 dta_data
 summary(dta_data)
-str(dta_data)
+str(dta_data,give.attr=FALSE)
 names(dta_data)
 categ_anal=table(Gender=dta_data$gender,Grade=dta_data$science)
 round(prop.table(categ_anal,1)*100,1)
+```
+## Exploratory Data Analysis using built in data in R
+# Examine your variables
+```{r var exam}
+data("women")
+women
+```
+
+```{r}
+names(women)
+```
+
+```{r}
+dim(women)
+```
+# Summary Statistics
+
+```{r}
+# Summary Statistics
+summary(women)
+```
+```{r}
+str(women,give.attr=FALSE)
+```
+```{r}
+apply(women,1,mean)
+```
+```{r}
+apply(women,2,sd)
+```
+```{r}
+c(mean(women$weight),sd(women$weight))
+```
+```{r}
+c(mean(women$height),sd(women$height))
+```
+```{r}
+c(Mean=mean(women$height),SD=sd(women$height))
+```
+```{r}
+c(Mean=mean(women$weight),SD=sd(women$weight))
+```
+## Variation & Co-variation using both Numerical & graphs
+# Relationship between categorical and continuous variables
+```{r}
+data("iris")
+head(iris)
+```
+```{r}
+mean(iris$Sepal.Length)
+```
+```{r}
+# Mean of Petal.length by setosa category
+mean(iris$Petal.Length[iris$Species=="setosa"])
+```
+```{r}
+# Mean of Petal.length by Versicolor category
+mean(iris$Petal.Length[iris$Species=="versicolor"])
+```
+```{r}
+# Mean of Petal.length by virginica category
+mean(iris$Petal.Length[iris$Species=="virginica"])
+```
+```{r}
+# Examine the mean by Shortcut
+by(iris$Petal.Length,iris$Species,mean)
+```
+```{r}
+# Examine the SD by Shortcut
+by(iris$Petal.Length,iris$Species,sd)
+```
+```{r}
+# Examine summary by Shortcut
+by(iris$Petal.Length,iris$Species,summary)
+```
+## Visualize the differences in continouus variables btn categoarical using Box_and_Whisker plot
+
+```{r}
+boxplot(iris$Sepal.Length~iris$Species,data = iris,main="Comparison of Categorical VS Quantitative")
+```
+## Relationship btn two categorical variables
+```{r}
+ucba<-data.frame(UCBAdmissions)
+head(ucba)
+```
+```{r}
+# Cross tabulation # Contigency table
+(cross<-xtabs(Freq~Gender+Admit,data = ucba))
+```
+```{r}
+# Is there gender bias in UCB graduate admission process?
+prop.table(cross,1)
+```
+## Simpson's paradox
+# Phenomenon, where a trend that appears in combined groups of data disappears or reverses when broken down into groups.
+```{r}
+cross2<-xtabs(Freq~Gender+Admit,data = ucba[ucba$Dept=="F",])
+prop.table(cross2,1)
+```
+## Bar Chart
+```{r}
+data1<-read.table(text = "ProdA ProdB ProdC ProdD
+                  1 110 50 60 70
+                  2 120 50 80 65",header= TRUE)
+barplot(as.matrix(data1),beside=TRUE,col=c("red","green"))
+```
+```{r}
+#barplot(as.matrix(data2),beside=TRUE,col=c("Gold3","red"))
+data2<- read.table(text = "A B C D E F G
+                   1 10 80 30 90 70 60 90
+                   2 20 50 70 50 40 10 40
+                   3 60 80 80 60 60 30 1560
+                   4 20 40 70 80 20 10 70",header=TRUE)
+barplot(as.matrix(data2))
+```
+# Scatter Plot
+```{r}
+plot(weight~height,data = women)
+```
+```{r}
+plot(women$weight,women$height)
+```
+```{r}
+plot(women[,1],women[,2],main = "Graph")
+```
+# Linear Model
+```{r}
+plot(weight~height,data = women)
+abline(lm(weight~height,data = women)$coefficient)
+```
+```{r}
+data_lm<-lm(height~weight,data = women)
+s<-summary(data_lm)
+round(s$coefficients,5)
+```
+
+```{r}
+plot(data_lm)
+```
+```{r}
+hist(women$height,col = "green")
+```
+```{r}
+hist(women$weight,col = "darkblue")
+```
+# Linear with other line
+```{r}
+plot(weight~height,data = women)
+abline(lm(weight~height,data = women)$coefficient)
+lines(lowess(women$height,women$height),col="red")
+```
+```{r}
+cor(women$height,women$weight)
+```
+```{r}
+lm(weight~height,women)
+```
+## Data Management
+# Create another Variable
+```{r}
+# Convert pounds to kilogram and Inches to meters
+BMI<-(women$weight*0.453592)/(women$height*0.0254)^2
+round(BMI,1)
+```
+
+```{r}
+# attach it to data frame and get new data frame
+women$BMI <-round(703*women$weight/women$height^2,1)
+head(women)
+summary(women$BMI)
+```
+```{r}
+# Summary of BMI
+summary(women$BMI)
+```
+```{r}
+stem(BMI,scale = 2)
+```
+# Date
+```{r}
+today<- Sys.Date()
+format(today,format="%B %d %Y")
+```
+```{r}
+format(today,format = "%A")
+```
+```{r}
+today<-Sys.Date()
+dob<-as.Date("1998-11-06")
+#today<-as.Date()
+difftime(today,dob,units = "days")
+```
+```{r}
+startdate<-as.Date("2022-11-01")
+enddate<-as.Date("2026-11-14")
+days<-enddate-startdate
+days
+```
+## Subsetting
+# Creation of leadership data Interest: How men and women differ in the way they lead their organizations. 5 questions were asked in this study. Example of the question: Do men and women in management position differ in the degree to which they defer to superiors? 1: strongly disagree, 2: disagree, 3:neither agree nor disagree,4: agree, 5: strongly agree
+```{r}
+# Use of $,[] or [[]]
+manager <- c(1,2,3,4,5)
+country<- c("US","US","UK","UK","UK")
+gender<-c("M","F","F","M","F")
+age<-c(32,45,25,39,99)
+q1<-c(5,3,3,3,2)
+q2<-c(4,5,5,3,2)
+q3<-c(5,2,5,4,1)
+q4<-c(5,5,5,NA,2)
+q5<-c(5,5,2,NA,1)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5, stringsAsFactors = TRUE)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5)
+str(leadership)
+```
+```{r}
+names(leadership)
+```
+# Missing Value
+```{r}
+leadership$age[leadership$age==99]<-NA
+View(leadership)
+```
+
+```{r}
+leadership$agecat[leadership$age>75]<-"Elder"
+leadership$agecat[leadership$age>=5 & leadership$age<=75]<-"Middle aged"
+leadership$agecat[leadership$age<35]<-"Young"
+```
+## One way of handling missing value
+# Deleting all observations with missing data ( Listwise deletion) is one of the several methods of handling incomplete datasets. Note: You can also replacing the missing value by the average of the remaining data.
+
+```{r}
+is.na(leadership[,5:9])
+```
+```{r}
+new_leadersh<-na.omit(leadership)
+new_leadersh
+```
+# Sorting Data
+```{r}
+order(leadership$age)
+```
+```{r}
+new_leadersh2<-leadership[order(leadership$age)]
+```
+## merging Data-sets
+# To merge two data frame horizontally, you use merge() function. In most cases, two data frames are joined by one or more common key variables. -example 1: merge(dataframeA, dataframeB,by=“ID”) -example 2: merge(dataframeA,dataframeB, by=c(“ID”,“country”))
+
+# the second merge the two dataframes by ID and country
+
+# To join two data frame( datasets) vertically, use rbind() function: Note that the two data set must have the same variables
+
+## Subset (selecting variables,dropping variables,selecting observation )
+```{r}
+new_ledersh3<-leadership[,c(5:9)]
+(new_ledersh3<-leadership[myvars])
+```
+```{r}
+new_leadersh4<-leadership[,c(-1,-2)]
+(new_leadersh4<-leadership[,-(1:5)])
+```
+```{r}
+new_leadersh5<-leadership[,c(-1,-7)]
+leadership[[4]]
+```
+```{r}
+new_leadersh6<-leadership[c(-1,-3),]
+new_leadersh6<-leadership[c(2,4,5),]
+new_leadersh7<-subset(leadership,age>=35|age<24,select=c(q1,q2,q3,q4,q5))
+```
+```{r}
+attach(leadership)
+```
+```{r}
+(new_leadersh7<-leadership[gender=="M" & age>30,])
+```
+
 
