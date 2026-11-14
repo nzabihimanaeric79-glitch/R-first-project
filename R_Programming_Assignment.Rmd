@@ -2,7 +2,8 @@
 title: "Class Assignments of R"
 author: "Eric NZABIHIMANA"
 date: "2026-10-31"
-output: html_document
+output:
+  html_document: default
 ---
 #-----------------------------------------------------------------------------------
 # Hw1: Import data from statistical package and from Database management system
@@ -353,8 +354,7 @@ new_leadersh2<-leadership[order(leadership$age)]
 
 ## Subset (selecting variables,dropping variables,selecting observation )
 ```{r}
-new_ledersh3<-leadership[,c(5:9)]
-(new_ledersh3<-leadership[myvars])
+(new_ledersh3<-leadership[,c(5:9)])
 ```
 ```{r}
 new_leadersh4<-leadership[,c(-1,-2)]

@@ -1,13 +1,15 @@
 ---
-title: "R-Mid-Term Project"
-author: "Eric NZABIHIMANA"
+title: "MID-TERM PROJECT OF R-PROGRAMMING"
+author: |
+  Eric NZABIHIMANA
+  Reg: 20252MBI047
 date: "2026-11-03"
+
 output:
   pdf_document: default
   html_document: default
 ---
 
-## MID-TERM PROJECT OF R-PROGRAMMING
 
 ### Installation and calling the packages for loading data
 
@@ -15,12 +17,21 @@ output:
 install.packages(c("readxl","readr"))
 ```
 
-```{r packages}
+# Loading the necessary packages
+```{r packages, message=FALSE}
 library(readxl)
 library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(countrycode)
+library(knitr)
+library(broom)
+library(gt)
 ```
 
-### Loading CO2 Emmission & Population data
+
+### Loading CO2 Emission & Population data
 
 ```{r load-co2}
 co2_emmission <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/R/R-first-project/CO2_emission.csv")
@@ -35,18 +46,22 @@ world_pop <- read_csv("C:/Users/enzabihimana/OneDrive - SanlamAllianz/Documents/
 ### Top five rows of population Data-set
 
 ```{r head}
-head(world_pop,5)
+world_pop |>
+  select(`Country/Territory`, Continent, `2022 Population`) |>
+  head(5)
 ```
 
 ### Last ten rows of population Data-set
 
 ```{r tail}
-tail(world_pop,10)
+world_pop |>
+  select(`Country/Territory`, Continent, `2022 Population`) |>
+  tail(10)
 ```
 
 ### Data types of population Data-set
 ```{r str}
-str(world_pop)
+str(world_pop, give.attr = FALSE)
 ```
 
 ### Shape of population Data-set
@@ -58,7 +73,6 @@ dim(world_pop)
 ### Checking & dropping duplicates rows
 ```{r}
 sum(duplicated(world_pop))
-library(dplyr)
 world_pop_clean <- world_pop %>% distinct()
 View(world_pop_clean)
 ```
@@ -67,9 +81,10 @@ View(world_pop_clean)
 
 ```{r sum}
 sum(is.na(world_pop[,1:17]))
+colSums(is.na(world_pop[,1:17]))
 ```
 
-### Checking Outliers
+### Checking Outliers by box plot
 
 ```{r boxplot}
 boxplot(world_pop[6:17],main="Box Plot for World Population Data",las=2)
@@ -77,27 +92,28 @@ boxplot(world_pop[6:17],main="Box Plot for World Population Data",las=2)
 
 ## New variable creation based on existing variable
 
-### To create new variable from existing when you are given initial population population (base of 2022 population size) growth rate(differ to each & every country),natural logarithm (2.71828) and time period(8 years.
-
 ```{r Pop in 2030}
+# To create new variable from existing when you are given initial population population (base of 2022 population size) growth rate(differ to each & every country),natural logarithm (2.71828) and time period(8 years.
+
 time<- 2030-2022
 world_pop$Pop_2030 <- world_pop$`2022 Population` *exp((world_pop$`Growth Rate` - 1) * 8)
+names(world_pop)
+sum(is.na(world_pop$Pop_2030))
 ```
 
-## Extracting top ten countries with largest number of population
+# Extracting top ten countries with largest number of population
 
 ```{r top ten countries}
 top_ten<-world_pop[order(world_pop$`2020 Population`,decreasing = TRUE),][1:10,]
 top_ten
 
 ```
-### By using ggplo2# graph showing the visualization of countries vs population 
-
+# By using ggplot2 
 
 ```{r graph of top ten}
-library(ggplot2)
-library(tidyr)
-ggplot(top10, aes(x = reorder(`Country/Territory`, `2022 Population`),
+# graph showing the visualization of countries vs population
+
+ggplot(top_ten, aes(x = reorder(`Country/Territory`, `2022 Population`),
                   y = `2022 Population`)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -106,11 +122,13 @@ ggplot(top10, aes(x = reorder(`Country/Territory`, `2022 Population`),
        x = "Country",
        y = "Population")
 ```
-## Trend in population since 1990-2022 
-### The graph ggplot2 used to show the the trend of population since 1990 to 2022
+
+
+# Trend in population since 1990-2022 
 
 ```{r trend in population}
-trend <- pivot_longer(top10,
+# The graph ggplot2 used to show the the trend of population since 1990 to 2022
+trend <- pivot_longer(top_ten,
                       cols = c(`1990 Population`, `2000 Population`,
                                `2010 Population`, `2015 Population`,
                                `2020 Population`, `2022 Population`),
@@ -130,5 +148,190 @@ ggplot(trend, aes(x = Year, y = Population, color = `Country/Territory`)) +
        color = "Country")
 trend
 ```
-gggplt
+## Extracting emission by top ten populous countries
 
+# Handling missing values in co2_emission data_set
+
+```{r fill}
+# Step 1: Make a copy (this is my new data set)
+co2_new_data <- as.data.frame(co2_emmission)
+
+year_cols <- 5:34 # the year columns (1990 to 2019)
+
+# Step 2: Fill the missing values in the copy only
+for (i in 1:nrow(co2_new_data)) {
+  row_values <- as.numeric(co2_new_data[i, year_cols])
+  row_values[is.na(row_values)] <- median(row_values, na.rm = TRUE)
+  co2_new_data[i, year_cols] <- row_values
+}
+sum(is.na(co2_new_data))
+View(co2_new_data)
+```
+
+```{r drop}
+co2_new_data$Totmissing <- NULL
+names(co2_new_data)
+```
+
+# Dropping missing values after handling them by median computation
+
+```{r Removing missing}
+co2_emission_cleaned<-na.omit(co2_new_data)
+sum(is.na(co2_emission_cleaned))
+```
+
+
+```{r Emmission}
+# Since the top ten populous countries have been extracted above,let's keep only the countries which are most populated with their emission figure
+
+top_ten_co2 <- co2_emission_cleaned[co2_emission_cleaned$country_code %in% top_ten$CCA3, 1:35]
+top_ten_co2[, c(1, 5, 34)]
+```
+
+# Formatting the date (a row consist with country,year and CO2)
+
+```{r Formatting}
+co2_format <- pivot_longer(top_ten_co2,cols = 5:34,names_to = "Year",values_to = "CO2")
+table(co2_format$`Country Name`)
+```
+# Keep clean number instead of text
+```{r From text to numer}
+co2_format$Year <-parse_number(co2_format$Year)
+unique(co2_format$Year)
+```
+# Line graph showing emission trend since 1990-2019
+```{r Trend of emission}
+ggplot(co2_format, aes(x = Year, y = CO2, color = `Country Name`)) +
+  geom_line() +
+  labs(title = "CO2 emissions of the 10 most populous countries\n(1990-2019)",
+       x = "Year",
+       y = "CO2 emissions (metric tons per capita)",
+       color = "Country") +
+  theme(plot.title = element_text(size = 11, hjust = 0.5,
+                                  lineheight = 1.1,
+                                  margin = margin(t = 10, b = 20)),
+        plot.title.position = "plot",
+        legend.position = "bottom")
+```
+
+
+```{r Corr}
+# correlations between Area,Density,Growth rate, and World Population Percentage by using both numerical values and heatmap.
+
+variables <- world_pop[,c("Area (km²)","Density (per km²)","Growth Rate","World Population Percentage")]
+names(variables)<-c("Area","Density","Growth_Rate","World_pop_Percentage")
+```
+# Correlation as numbers
+```{r}
+cor_matrix <- round(cor(variables),2)
+cor_matrix
+```
+# Correlation as heatmap
+```{r corr}
+Corr_format<-as.data.frame(as.table(cor_matrix))
+names(Corr_format)<-c("Var1","Var2","Correlation")
+ggplot(Corr_format, aes(x = Var1, y = Var2, fill = Correlation)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = Correlation)) +
+  scale_fill_gradient2(low = "darkblue", mid = "grey", high = "red",
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(title = "Correlation Heatmap", x = "", y = "") +
+  theme_minimal()
+```
+# Choosing the columns we need
+
+```{r kepp col}
+pop_lation<-world_pop[,c("Country/Territory","2022 Population")]
+names(pop_lation)<-c("Country","Population")
+
+co2_2019<-co2_emission_cleaned[,c("Country Name","2019...34")]
+names(co2_2019)<-c("Country","CO2")
+
+```
+# Merging these two tables by Country name
+```{r merging}
+merged_data<-merge(pop_lation,co2_2019,by="Country")
+dim(merged_data)
+```
+# Graph of the emission with population
+```{r plot}
+plot(merged_data$Population,merged_data$CO2,
+main = "Population VS CO2",
+xlab = "Population(millions)",
+ylab = "CO2 per person")
+```
+# Correlation of population vs CO2
+```{r correlation}
+cor(merged_data$Population,merged_data$CO2)
+```
+
+# Regression analysis
+```{r regression_model}
+model <- lm(CO2 ~ Population, data = merged_data)
+
+tidy(model, conf.int = TRUE) |>
+  gt() |>
+  fmt_number(decimals = 3) |>
+  fmt_scientific(columns = c(estimate, std.error, conf.low, conf.high)) |>
+  tab_header(title = "Linear Model Results")
+```
+
+## Comparing emissions by continents
+# Install & load package help on continent code
+
+install.packages("countrycode")
+
+# Join the continent column
+```{r joining}
+merged_data$Continent <- countrycode(merged_data$Country,
+                                     origin = "country.name",
+                                     destination = "continent")
+```
+# Check for missing
+```{r missing check}
+table(merged_data$Continent, useNA = "ifany")
+merged_data$Country[is.na(merged_data$Continent)]
+```
+# Summation of CO2 by continent
+
+```{r summation}
+continent_co2 <- merged_data |>
+  group_by(Continent) |>
+  summarise(Total_CO2 = sum(CO2, na.rm = TRUE)) |>
+  arrange(desc(Total_CO2))
+
+continent_co2
+```
+# Plot the data
+```{r graphing of cont}
+ggplot(continent_co2,
+       aes(x = reorder(Continent, -Total_CO2), y = Total_CO2, fill = Continent)) +
+  geom_col() +
+  geom_text(aes(label = round(Total_CO2, 1)), vjust = -0.5) +
+  labs(title = "Total CO2 Emissions by Continent, 2019",
+       x = "Continent",
+       y = "CO2 (metric tons per capita)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+
+```{r first_continent}
+### The first continent with high 2019 CO2 emission
+continent_co2[1, ]
+```
+
+
+
+```{r third continent}
+### the third continent in terms of emitting CO2 & their Total emission
+
+continent_co2[3, ] 
+```
+
+
+```{r the last continent}
+### The last continent in terms of emitting CO2 & their total emission
+
+continent_co2[nrow(continent_co2), ]
+```
