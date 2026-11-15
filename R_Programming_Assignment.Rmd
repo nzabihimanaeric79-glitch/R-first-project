@@ -375,5 +375,84 @@ attach(leadership)
 ```{r}
 (new_leadersh7<-leadership[gender=="M" & age>30,])
 ```
+# Geom package variations practice
+```{r}
+# Bar graph of categorical variables
+library(ggplot2)
+data("diamonds")
+ggplot(diamonds,aes(x=cut,fill = cut))+geom_bar()+
+  scale_fill_brewer(palette = "Set2",name = "Cut quality")+
+  labs(
+  title = "Graph of cuts",
+  x="Cut",
+  y="Counts"
+)+theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+# Pie chart # ggplot
+ggplot(diamonds, aes(x = "", fill = cut)) +
+  geom_bar(width = 1) +
+  coord_polar(theta = "y") +
+  geom_text(stat = "count",
+            aes(label = scales::percent(after_stat(count / sum(count)), accuracy = 0.1)),
+            position = position_stack(vjust = 0.5)) +
+  scale_fill_brewer(palette = "Set2", name = "Cut quality") +
+  labs(title = "Graph of cuts") +
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+# Grouped bar chart for categorical variable
+ggplot(diamonds,aes(x=cut,fill=clarity))+geom_bar()+
+  scale_fill_brewer(palette = "Set2",name = "Cut quality")+
+  labs(
+  title = "Graph of cuts",
+  x="Cut",
+  y="Counts"
+)+theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+data("mtcars")
+names(mtcars)
+model<-lm(mpg ~ wt + hp + qsec, data = mtcars)
+par(mfrow=c(2,2))
+summary(model)
+```
+```{r}
+# Checking for Linearity Assumption
+plot(model)
+```
+## Apply function variations practice
+```{r}
+# Apply function
+apply(mtcars, 2, mean)
+```
+```{r}
+# Sapply function
+sapply(mtcars,sd)
+```
 
+```{r}
+# Tapply function
+tapply(mtcars$mpg, mtcars$cyl, mean)
+```
 
+```{r}
+# Mapply function # Add mpg & mtcars for first five cases(cars)
+mapply(function(a, b) a + b, mtcars$mpg[1:5], mtcars$wt[1:5])
+```
+
+```{r}
+# Filter function
+Filter(function(x) x %% 2 == 0, 1:10)
+```
+
+```{r}
+# Lapply function
+lapply(mtcars[,1:3],mean) 
+```
+
+```{r}
+# Vapply function
+vapply(mtcars[,1:4],max,numeric(1))
+```
