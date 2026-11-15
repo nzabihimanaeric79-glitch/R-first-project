@@ -5,7 +5,9 @@ date: "2026-10-31"
 output:
   html_document: default
 ---
-#-----------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+
+
 # Hw1: Import data from statistical package and from Database management system
 
 ## Installation of packages open the files from statistical packages
@@ -411,6 +413,10 @@ ggplot(diamonds,aes(x=cut,fill=clarity))+geom_bar()+
   y="Counts"
 )+theme(plot.title = element_text(hjust = 0.5))
 ```
+
+
+## Linear regression practice
+
 ```{r}
 data("mtcars")
 names(mtcars)
@@ -422,7 +428,16 @@ summary(model)
 # Checking for Linearity Assumption
 plot(model)
 ```
-## Apply function variations practice
+
+
+
+
+
+
+
+
+## Apply function variations practice 
+
 ```{r}
 # Apply function
 apply(mtcars, 2, mean)
